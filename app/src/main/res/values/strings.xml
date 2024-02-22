@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Pets Helper</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string-array name="pets_types">
+        <item>Other</item>
+        <item>Cat</item>
+        <item>Dog</item>
+        <item>Turtle</item>
+        <item>Parrot</item>
+        <item>Fish</item>
+        <item>Hamster</item>
+    </string-array>
+</resources>
