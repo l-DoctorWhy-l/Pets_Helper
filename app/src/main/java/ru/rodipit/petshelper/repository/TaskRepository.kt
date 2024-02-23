@@ -1,5 +1,7 @@
 package ru.rodipit.petshelper.repository
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.liveData
 import ru.rodipit.petshelper.data.dao.TaskDao
 import ru.rodipit.petshelper.data.entities.Task
 import java.util.Calendar
@@ -10,10 +12,10 @@ class TaskRepository(private val taskDao: TaskDao) {
     }
 
     suspend fun loadTask(id: Int): Task {
-        return taskDao.getTask(id)
+        return  taskDao.getTask(id)
     }
 
-    suspend fun loadTasks(animalId: Int): MutableList<Task>{
+    suspend fun loadTasks(animalId: Int): MutableList<Task> {
         return taskDao.getTasks(animalId).toMutableList()
     }
 
@@ -21,8 +23,13 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTasks(animalId, type).toMutableList()
     }
 
+    suspend fun updateTask(task: Task){
+        taskDao.update(task)
+    }
+
     suspend fun loadCurrentDateTasks(animalId: Int): MutableList<Task>{
         val tasks = loadTasks(animalId)
+        println(tasks.size)
         val nowTime = Calendar.getInstance()
         val result = mutableListOf<Task>()
         tasks.forEach{

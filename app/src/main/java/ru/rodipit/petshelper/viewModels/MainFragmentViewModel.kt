@@ -3,10 +3,13 @@ package ru.rodipit.petshelper.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import ru.rodipit.petshelper.AnimalsAdapter
+import ru.rodipit.petshelper.adapters.TasksAdapter
 import ru.rodipit.petshelper.data.dao.AnimalDao
 import ru.rodipit.petshelper.data.dao.TaskDao
 import ru.rodipit.petshelper.data.dao.UserDao
@@ -27,6 +30,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
     private val taskRepository: TaskRepository = TaskRepository(taskDao)
 
     val currentTasks = MutableLiveData<MutableList<Task>>(mutableListOf())
+    val oldTasks = MutableLiveData<MutableList<Task>>(mutableListOf())
 
     val animal = MutableLiveData(AnimalEntity())
 
@@ -41,7 +45,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
         viewModelScope.launch(Dispatchers.IO) {
             val loadedAnimal = repository.loadAnimal(animalId)
 
-            loadCurrentTasks()
+            loadCurrentTasks(animalId)
 
             withContext(Dispatchers.Main){
                 animal.value = loadedAnimal
@@ -49,12 +53,35 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
         }
     }
 
-    private fun loadCurrentTasks(){
+    private fun loadCurrentTasks(animalId: Int){
         viewModelScope.launch(Dispatchers.IO) {
-            val loadedTasks = taskRepository.loadCurrentDateTasks(requireNotNull(animal.value?.id))
+            val loadedTasks = taskRepository.loadCurrentDateTasks(animalId)
             withContext(Dispatchers.Main){
                 currentTasks.value = loadedTasks
+                println(currentTasks.value)
             }
+        }
+    }
+
+    fun updateTasks(){
+
+    }
+
+    fun addTask(){
+        viewModelScope.launch {
+            taskRepository.addTask(
+                Task(
+                    null,
+                    1,
+                    "AAAAA",
+                    "BBBB",
+                    System.currentTimeMillis() + 10000,
+                    0,
+                    Task.DAILY,
+                    Task.EATING,
+                    false
+                )
+            )
         }
     }
 
