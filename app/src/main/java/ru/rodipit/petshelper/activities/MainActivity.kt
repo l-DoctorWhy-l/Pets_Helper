@@ -8,11 +8,14 @@ import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.activity.result.contract.ActivityResultContracts
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import dagger.hilt.EntryPoint
+import dagger.hilt.android.AndroidEntryPoint
 import ru.rodipit.petshelper.adapters.AnimalsAdapter
 import ru.rodipit.petshelper.LoadingStates
 import ru.rodipit.petshelper.R
@@ -25,10 +28,11 @@ import ru.rodipit.petshelper.fragments.MedicineFragment
 import ru.rodipit.petshelper.viewModels.MainViewModel
 
 
+@AndroidEntryPoint
 class MainActivity : AppCompatActivity(), HelloFragment.OnEventListener {
 
     private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private lateinit var viewModel : MainViewModel
+    private val viewModel : MainViewModel by viewModels()
     private val onItemClickListener = AnimalsAdapter.OnItemClickListener{ context ->
         addAnimalActivityLauncher.launch(Intent(context, AddAnimalActivity::class.java))
     }
@@ -44,7 +48,6 @@ class MainActivity : AppCompatActivity(), HelloFragment.OnEventListener {
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
-        viewModel = ViewModelProvider(this)[MainViewModel::class.java]
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
 

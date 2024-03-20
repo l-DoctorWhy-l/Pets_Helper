@@ -4,12 +4,13 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.async
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.data.dao.AnimalDao
 import ru.rodipit.petshelper.data.dao.UserDao
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.UserEntity
 
-class Repository(private val userDao: UserDao, private val animalDao: AnimalDao) {
+class MainRepository(private val userDao: UserDao, private val animalDao: AnimalDao) {
 
     suspend fun loadUser(id: Int): UserEntity?{
         var user: UserEntity?
@@ -38,6 +39,10 @@ class Repository(private val userDao: UserDao, private val animalDao: AnimalDao)
 
 
         return animals
+    }
+
+    suspend fun addUser(userEntity: UserEntity) = withContext(Dispatchers.IO){
+        userDao.insert(userEntity)
     }
 
     suspend fun addAnimal(animalEntity: AnimalEntity){

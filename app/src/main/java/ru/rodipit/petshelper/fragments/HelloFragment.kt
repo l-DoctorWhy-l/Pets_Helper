@@ -7,12 +7,14 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.viewModels
 import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.databinding.FragmentHelloBinding
 import ru.rodipit.petshelper.viewModels.HelloViewModel
 
-
+@AndroidEntryPoint
 class HelloFragment : Fragment() {
 
     interface OnEventListener {
@@ -33,14 +35,13 @@ class HelloFragment : Fragment() {
 
     private var _binding: FragmentHelloBinding? = null
     private val binding get() = _binding!!
-    private lateinit var viewModel: HelloViewModel
+    private val viewModel: HelloViewModel by viewModels()
 
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewModel = ViewModelProvider(requireActivity())[HelloViewModel::class.java]
         _binding = FragmentHelloBinding.inflate(inflater, container, false)
 
 

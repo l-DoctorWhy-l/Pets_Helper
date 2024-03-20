@@ -5,16 +5,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
+import androidx.fragment.app.viewModels
+import dagger.hilt.android.AndroidEntryPoint
 import ru.rodipit.petshelper.databinding.FragmentExpensesBinding
 import ru.rodipit.petshelper.viewModels.ExpensesViewModel
-
+@AndroidEntryPoint
 class ExpensesFragment : Fragment() {
 
     private var _binding: FragmentExpensesBinding? = null
     private val binding get() = _binding!!
 
-    private lateinit var viewModel: ExpensesViewModel
+    private val viewModel: ExpensesViewModel by viewModels()
 
     companion object{
         fun getNewInstance(animalId: Int): ExpensesFragment{
@@ -32,7 +33,6 @@ class ExpensesFragment : Fragment() {
     ): View {
         _binding = FragmentExpensesBinding.inflate(inflater, container, false)
 
-        viewModel = ViewModelProvider(this)[ExpensesViewModel::class.java]
 
         val animalId = when(arguments){
             null -> -1

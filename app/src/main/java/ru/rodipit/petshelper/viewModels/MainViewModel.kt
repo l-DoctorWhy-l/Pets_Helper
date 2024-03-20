@@ -3,7 +3,9 @@ package ru.rodipit.petshelper.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.launch
@@ -15,13 +17,13 @@ import ru.rodipit.petshelper.data.db.AnimalsDb
 import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.UserEntity
-import ru.rodipit.petshelper.repository.Repository
+import ru.rodipit.petshelper.repository.MainRepository
+import javax.inject.Inject
 
-class MainViewModel(application: Application) : AndroidViewModel(application) {
+@HiltViewModel
+class MainViewModel @Inject constructor(private val mainRepository: MainRepository) : ViewModel() {
 
-    private var userDao: UserDao = UsersDb.getInstance(application.applicationContext).getDao()
-    private var animalDao: AnimalDao = AnimalsDb.getInstance(application.applicationContext).getDao()
-    val currentUser: MutableLiveData<UserEntity?> = MutableLiveData(null)
+    private val currentUser: MutableLiveData<UserEntity?> = MutableLiveData(null)
     val currentAnimalPosition: MutableLiveData<Int> = MutableLiveData(0)
     val animals: MutableLiveData<MutableList<AnimalEntity>> = MutableLiveData(mutableListOf(AnimalEntity()))
     var currentAnimal = animals.value?.get(0)
@@ -32,7 +34,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         Pair("user", LoadingStates.START),
         Pair("animals", LoadingStates.START))
     )
-    private val repository: Repository = Repository(userDao, animalDao)
 
 
     init {
@@ -40,11 +41,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
         createObservers()
 
         startLoading()
-
-
-
-
-
 
     }
 
@@ -54,7 +50,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
 
     fun startLoading() = viewModelScope.launch(Dispatchers.IO) {
         withContext(Dispatchers.Main){ loadingStates.value = loadingStates.value?.apply {set("user", LoadingStates.LOADING)} }
-        val user = repository.loadUser(1)
+        val user = mainRepository.loadUser(1)
         withContext(Dispatchers.Main) {
             if (user == null)
                 state.value = "registration"
@@ -63,7 +59,6 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 currentUser.value = user
                 loadingStates.value = loadingStates.value?.apply {set("user", LoadingStates.LOADED)}
                 loadingStates.value = loadingStates.value?.apply {set("user", LoadingStates.SHOWING)}
-//                println(loadingStates.value)
 
             }
         }
@@ -76,7 +71,7 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             loadingStates.value = loadingStates.value?.apply {set("animals", LoadingStates.LOADING)}
         }
 
-        val loadedAnimals = repository.loadUsersAnimals(userId)
+        val loadedAnimals = mainRepository.loadUsersAnimals(userId)
 
 
 

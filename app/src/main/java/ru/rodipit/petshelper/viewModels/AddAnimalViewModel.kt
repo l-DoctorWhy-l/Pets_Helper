@@ -3,7 +3,9 @@ package ru.rodipit.petshelper.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
@@ -14,13 +16,11 @@ import ru.rodipit.petshelper.data.db.AnimalsDb
 import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.models.Animal
-import ru.rodipit.petshelper.repository.Repository
+import ru.rodipit.petshelper.repository.MainRepository
+import javax.inject.Inject
 
-class AddAnimalViewModel(application: Application) : AndroidViewModel(application) {
-
-    private var userDao: UserDao = UsersDb.getInstance(application.applicationContext).getDao()
-    private var animalDao: AnimalDao = AnimalsDb.getInstance(application.applicationContext).getDao()
-    private val repository: Repository = Repository(userDao, animalDao)
+@HiltViewModel
+class AddAnimalViewModel @Inject constructor(private val mainRepository: MainRepository) : ViewModel() {
 
     val name = MutableLiveData("")
     val fullname = MutableLiveData("")
@@ -69,7 +69,7 @@ class AddAnimalViewModel(application: Application) : AndroidViewModel(applicatio
                     breed.value!!, 1, animalType.value!!)
 
             viewModelScope.launch(Dispatchers.IO) {
-                val addAnimalJob = repository.addAnimal(newAnimal)
+                val addAnimalJob = mainRepository.addAnimal(newAnimal)
                 withContext(Dispatchers.Main){
                     success.value = true
                 }

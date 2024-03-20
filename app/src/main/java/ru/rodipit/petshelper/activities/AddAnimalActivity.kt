@@ -5,24 +5,23 @@ import android.view.View
 import android.widget.AdapterView
 import android.widget.AdapterView.OnItemSelectedListener
 import android.widget.ArrayAdapter
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.widget.addTextChangedListener
-import androidx.lifecycle.ViewModelProvider
+import dagger.hilt.android.AndroidEntryPoint
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.databinding.ActivityAddAnimalBinding
 import ru.rodipit.petshelper.models.Animal
 import ru.rodipit.petshelper.viewModels.AddAnimalViewModel
-
+@AndroidEntryPoint
 class AddAnimalActivity : AppCompatActivity() {
 
     private val binding: ActivityAddAnimalBinding by lazy { ActivityAddAnimalBinding.inflate(layoutInflater) }
-    private lateinit var viewModel: AddAnimalViewModel
+    private val viewModel: AddAnimalViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(binding.root)
-        viewModel = ViewModelProvider(this)[AddAnimalViewModel::class.java]
-
         val spinnerAdapter = ArrayAdapter.createFromResource(this, R.array.pets_types, android.R.layout.simple_spinner_item)
         spinnerAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         binding.animalTypeSpinner.adapter = spinnerAdapter

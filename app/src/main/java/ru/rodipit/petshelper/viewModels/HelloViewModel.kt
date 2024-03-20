@@ -3,17 +3,21 @@ package ru.rodipit.petshelper.viewModels
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.UserEntity
+import ru.rodipit.petshelper.repository.MainRepository
+import javax.inject.Inject
 
-class HelloViewModel(application: Application): AndroidViewModel(application) {
+@HiltViewModel
+class HelloViewModel @Inject constructor(private val mainRepository: MainRepository): ViewModel() {
 
 
-    private var userDao = UsersDb.getInstance(application.applicationContext).getDao()
     val userName: MutableLiveData<String> = MutableLiveData("")
     val regIsComplete: MutableLiveData<Boolean> = MutableLiveData(false)
 
@@ -28,14 +32,12 @@ class HelloViewModel(application: Application): AndroidViewModel(application) {
 
 
     fun createUser(userName: String){
-        viewModelScope.launch(Dispatchers.IO) {
+        viewModelScope.launch{
 
             val newUser = UserEntity(userName.trim())
-            userDao.insert(newUser)
+            mainRepository.addUser(newUser)
 
-            withContext(Dispatchers.Main.immediate){
-                regIsComplete.value = true
-            }
+            regIsComplete.value = true
 
         }
 

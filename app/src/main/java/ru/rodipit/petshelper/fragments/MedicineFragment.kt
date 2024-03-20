@@ -5,9 +5,10 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import dagger.hilt.android.AndroidEntryPoint
 import ru.rodipit.petshelper.databinding.FragmentMedicineBinding
 
-
+@AndroidEntryPoint
 class MedicineFragment : Fragment() {
 
     private var _binding: FragmentMedicineBinding? = null

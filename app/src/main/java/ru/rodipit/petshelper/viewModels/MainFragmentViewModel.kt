@@ -1,9 +1,10 @@
 package ru.rodipit.petshelper.viewModels
 
 import android.app.Application
-import android.util.Log
 import androidx.lifecycle.AndroidViewModel
+import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -18,16 +19,18 @@ import ru.rodipit.petshelper.data.db.TasksDb
 import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.Task
-import ru.rodipit.petshelper.repository.Repository
+import ru.rodipit.petshelper.repository.MainRepository
 import ru.rodipit.petshelper.repository.TaskRepository
+import javax.inject.Inject
 
-class MainFragmentViewModel(application: Application): AndroidViewModel(application) {
+@HiltViewModel
+class MainFragmentViewModel @Inject
+    constructor(
+    private val mainRepository: MainRepository,
+    private val taskRepository: TaskRepository
+    ) :ViewModel() {
 
-    private var userDao: UserDao = UsersDb.getInstance(application.applicationContext).getDao()
-    private var animalDao: AnimalDao = AnimalsDb.getInstance(application.applicationContext).getDao()
-    private var taskDao: TaskDao = TasksDb.getInstance(application.applicationContext).getDao()
-    private val repository: Repository = Repository(userDao, animalDao)
-    private val taskRepository: TaskRepository = TaskRepository(taskDao)
+
 
     private val _currentTasks = MutableStateFlow<MutableList<Task>>(mutableListOf())
     val currentTasks: StateFlow<MutableList<Task>>
@@ -46,7 +49,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
 
 
         viewModelScope.launch(Dispatchers.IO) {
-            val loadedAnimal = repository.loadAnimal(animalId)
+            val loadedAnimal = mainRepository.loadAnimal(animalId)
 
             loadCurrentTasks(animalId)
 
@@ -77,7 +80,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
                 1,
                 "AAAAA",
                 "BBBB",
-                System.currentTimeMillis() + 10000,
+                System.currentTimeMillis(),
                 0,
                 Task.DAILY,
                 Task.EATING,

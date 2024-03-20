@@ -32,7 +32,7 @@ class TasksAdapter(private val context: Context): RecyclerView.Adapter<TasksAdap
                 { oldItem: Task, newItem: Task -> oldItem == newItem }
             )
             field = value
-            var diffResult = DiffUtil.calculateDiff(callback)
+            val diffResult = DiffUtil.calculateDiff(callback)
             diffResult.dispatchUpdatesTo(this)
 
         }
@@ -61,11 +61,10 @@ class TasksAdapter(private val context: Context): RecyclerView.Adapter<TasksAdap
                 val time = GregorianCalendar.getInstance().apply{ timeInMillis = task.time}
 
                 val showTime = StringBuilder().apply {
-                    append(time.get(Calendar.DAY_OF_MONTH))
-                    append(".")
-                    append(time.get(Calendar.MONTH) + 1)
-                    append(".")
-                    append(time.get(Calendar.YEAR))
+                    append(time.get(Calendar.HOUR_OF_DAY))
+                    append(":")
+                    append(time.get(Calendar.MINUTE))
+
                 }
                 timeTv.text = showTime.toString()
                 doneChb.isChecked = task.state
