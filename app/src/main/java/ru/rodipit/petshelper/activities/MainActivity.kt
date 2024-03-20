@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import ru.rodipit.petshelper.AnimalsAdapter
+import ru.rodipit.petshelper.adapters.AnimalsAdapter
 import ru.rodipit.petshelper.LoadingStates
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.databinding.ActivityMainBinding

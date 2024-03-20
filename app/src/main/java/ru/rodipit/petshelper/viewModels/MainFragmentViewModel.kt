@@ -1,15 +1,15 @@
 package ru.rodipit.petshelper.viewModels
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
-import androidx.lifecycle.liveData
 import androidx.lifecycle.viewModelScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.rodipit.petshelper.AnimalsAdapter
-import ru.rodipit.petshelper.adapters.TasksAdapter
 import ru.rodipit.petshelper.data.dao.AnimalDao
 import ru.rodipit.petshelper.data.dao.TaskDao
 import ru.rodipit.petshelper.data.dao.UserDao
@@ -29,10 +29,13 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
     private val repository: Repository = Repository(userDao, animalDao)
     private val taskRepository: TaskRepository = TaskRepository(taskDao)
 
-    val currentTasks = MutableLiveData<MutableList<Task>>(mutableListOf())
-    val oldTasks = MutableLiveData<MutableList<Task>>(mutableListOf())
+    private val _currentTasks = MutableStateFlow<MutableList<Task>>(mutableListOf())
+    val currentTasks: StateFlow<MutableList<Task>>
+        get() = _currentTasks.asStateFlow()
 
-    val animal = MutableLiveData(AnimalEntity())
+    private val _animal = MutableStateFlow(AnimalEntity())
+    val animal: StateFlow<AnimalEntity>
+        get() = _animal.asStateFlow()
 
 
     fun loadAnimal(animalId: Int){
@@ -48,7 +51,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
             loadCurrentTasks(animalId)
 
             withContext(Dispatchers.Main){
-                animal.value = loadedAnimal
+                _animal.value = loadedAnimal
             }
         }
     }
@@ -57,7 +60,7 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
         viewModelScope.launch(Dispatchers.IO) {
             val loadedTasks = taskRepository.loadCurrentDateTasks(animalId)
             withContext(Dispatchers.Main){
-                currentTasks.value = loadedTasks
+                _currentTasks.value = loadedTasks
                 println(currentTasks.value)
             }
         }
@@ -69,19 +72,20 @@ class MainFragmentViewModel(application: Application): AndroidViewModel(applicat
 
     fun addTask(){
         viewModelScope.launch {
-            taskRepository.addTask(
-                Task(
-                    null,
-                    1,
-                    "AAAAA",
-                    "BBBB",
-                    System.currentTimeMillis() + 10000,
-                    0,
-                    Task.DAILY,
-                    Task.EATING,
-                    false
-                )
+            val newTask =  Task(
+                null,
+                1,
+                "AAAAA",
+                "BBBB",
+                System.currentTimeMillis() + 10000,
+                0,
+                Task.DAILY,
+                Task.EATING,
+                false
             )
+            taskRepository.addTask(newTask)
+
+            _currentTasks.value = taskRepository.loadCurrentDateTasks(animal.value.id!!)
         }
     }
 

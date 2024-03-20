@@ -15,7 +15,7 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
                 var lastCompleteTime: Long,
                 var repeating: Int,
                 var type: Int,
-                var state: Boolean = false){
+                var state: Boolean = false) : Comparable<Task>{
 
 
     fun resetState(currentTime: Long){
@@ -68,5 +68,9 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
         const val HEALTH = 7
         const val EATING = 8
         const val OTHER = 9
+    }
+
+    override fun compareTo(other: Task): Int {
+        return (this.time - other.time).toInt()
     }
 }

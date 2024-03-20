@@ -1,10 +1,11 @@
-package ru.rodipit.petshelper
+package ru.rodipit.petshelper.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.databinding.AddAnimalCardBinding
 import ru.rodipit.petshelper.databinding.AnimalCardBinding

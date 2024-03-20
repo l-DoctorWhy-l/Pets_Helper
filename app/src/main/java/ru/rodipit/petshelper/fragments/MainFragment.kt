@@ -6,11 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
-import ru.rodipit.petshelper.AnimalsAdapter
 import ru.rodipit.petshelper.adapters.TasksAdapter
 import ru.rodipit.petshelper.databinding.FragmentMainBinding
 import ru.rodipit.petshelper.viewModels.MainFragmentViewModel
@@ -70,22 +68,28 @@ class MainFragment : Fragment() {
     }
 
     private fun createObservers(){
-        viewModel.animal.observe(viewLifecycleOwner){
-            if (it != null && it.id != -1 ){
-                with(binding){
-                    println(it)
-                    fullnameTv.text = it.fullName
-                    breedTv.text = it.breed
-                    ageTv.text = it.getAge().toString()
-                    birthdayTv .text = it.getBDay()
+
+        lifecycleScope.launch {
+            viewModel.animal.collect{
+                if (it.id != -1){
+                    with(binding){
+                        println(it)
+                        fullnameTv.text = it.fullName
+                        breedTv.text = it.breed
+                        ageTv.text = it.getAge().toString()
+                        birthdayTv .text = it.getBDay()
+                    }
                 }
             }
         }
 
-        viewModel.currentTasks.observe(viewLifecycleOwner){
-            adapter.data = it
-            viewModel.updateTasks()
+        lifecycleScope.launch {
+            viewModel.currentTasks.collect{
+                adapter.data = it
+                viewModel.updateTasks()
+            }
         }
+
     }
 
 }
