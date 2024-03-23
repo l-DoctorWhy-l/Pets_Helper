@@ -12,7 +12,14 @@ import ru.rodipit.petshelper.data.entities.UserEntity
 
 class MainRepository(private val userDao: UserDao, private val animalDao: AnimalDao) {
 
-    suspend fun loadUser(id: Int): UserEntity?{
+
+    suspend fun checkUser(id: Int = 1) = withContext(Dispatchers.IO){
+            val user = userDao.getUser(id)
+            return@withContext user != null
+
+    }
+
+    suspend fun loadUser(id: Int = 1) = withContext(Dispatchers.IO){
         var user: UserEntity?
         coroutineScope {
             val userTask = async { userDao.getUser(id) }
@@ -21,8 +28,7 @@ class MainRepository(private val userDao: UserDao, private val animalDao: Animal
             val animals =  animalTask.await().toMutableList()
             user?.animals = animals
         }
-        println(user)
-        return user
+        return@withContext user
     }
 
 

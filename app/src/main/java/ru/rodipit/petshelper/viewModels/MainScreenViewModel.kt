@@ -1,7 +1,5 @@
 package ru.rodipit.petshelper.viewModels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -11,12 +9,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import ru.rodipit.petshelper.data.dao.AnimalDao
-import ru.rodipit.petshelper.data.dao.TaskDao
-import ru.rodipit.petshelper.data.dao.UserDao
-import ru.rodipit.petshelper.data.db.AnimalsDb
-import ru.rodipit.petshelper.data.db.TasksDb
-import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.Task
 import ru.rodipit.petshelper.repository.MainRepository
@@ -24,7 +16,7 @@ import ru.rodipit.petshelper.repository.TaskRepository
 import javax.inject.Inject
 
 @HiltViewModel
-class MainFragmentViewModel @Inject
+class MainScreenViewModel @Inject
     constructor(
     private val mainRepository: MainRepository,
     private val taskRepository: TaskRepository

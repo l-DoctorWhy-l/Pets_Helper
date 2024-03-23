@@ -6,21 +6,20 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.LinearLayoutManager
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.launch
 import ru.rodipit.petshelper.adapters.TasksAdapter
 import ru.rodipit.petshelper.databinding.FragmentMainBinding
-import ru.rodipit.petshelper.viewModels.MainFragmentViewModel
+import ru.rodipit.petshelper.viewModels.MainScreenViewModel
 
 @AndroidEntryPoint
 class MainFragment : Fragment() {
 
     private var _binding: FragmentMainBinding? = null
     private val binding get() = _binding!!
-    private val viewModel : MainFragmentViewModel by viewModels()
+    private val viewModel : MainScreenViewModel by viewModels()
     private lateinit var adapter: TasksAdapter
 
     companion object{

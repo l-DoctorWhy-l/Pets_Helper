@@ -4,9 +4,12 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.asFlow
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.data.db.UsersDb
@@ -18,8 +21,10 @@ import javax.inject.Inject
 class HelloViewModel @Inject constructor(private val mainRepository: MainRepository): ViewModel() {
 
 
-    val userName: MutableLiveData<String> = MutableLiveData("")
-    val regIsComplete: MutableLiveData<Boolean> = MutableLiveData(false)
+    private val _userName: MutableStateFlow<String> = MutableStateFlow("")
+    val userName get() = _userName.asStateFlow()
+    private val _regIsComplete: MutableStateFlow<Boolean> = MutableStateFlow(false)
+    val regIsComplete get() = _regIsComplete.asStateFlow()
 
 
 
@@ -27,7 +32,7 @@ class HelloViewModel @Inject constructor(private val mainRepository: MainReposit
 
 
     fun updateUserName(userName: String){
-        this.userName.value = userName
+        this._userName.value = userName
     }
 
 
@@ -37,7 +42,7 @@ class HelloViewModel @Inject constructor(private val mainRepository: MainReposit
             val newUser = UserEntity(userName.trim())
             mainRepository.addUser(newUser)
 
-            regIsComplete.value = true
+            _regIsComplete.value = true
 
         }
 

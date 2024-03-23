@@ -1,38 +1,18 @@
 package ru.rodipit.petshelper.activities
 
-import android.app.Activity
-import android.content.Intent
 import android.os.Bundle
-import android.util.Log
-import android.view.View
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import androidx.activity.result.contract.ActivityResultContracts
-import androidx.activity.viewModels
-import androidx.appcompat.app.AppCompatActivity
-import androidx.fragment.app.Fragment
-import androidx.lifecycle.ViewModelProvider
-import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
-import dagger.hilt.EntryPoint
+import androidx.activity.ComponentActivity
+import androidx.activity.compose.setContent
+import androidx.compose.material3.MaterialTheme
 import dagger.hilt.android.AndroidEntryPoint
-import ru.rodipit.petshelper.adapters.AnimalsAdapter
-import ru.rodipit.petshelper.LoadingStates
-import ru.rodipit.petshelper.R
-import ru.rodipit.petshelper.databinding.ActivityMainBinding
-import ru.rodipit.petshelper.fragments.EatingFragment
-import ru.rodipit.petshelper.fragments.ExpensesFragment
-import ru.rodipit.petshelper.fragments.HelloFragment
-import ru.rodipit.petshelper.fragments.MainFragment
-import ru.rodipit.petshelper.fragments.MedicineFragment
-import ru.rodipit.petshelper.viewModels.MainViewModel
+import ru.rodipit.petshelper.ui.Navigation
 
 
 @AndroidEntryPoint
-class MainActivity : AppCompatActivity(), HelloFragment.OnEventListener {
+class MainActivity : ComponentActivity() {
 
-    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
-    private val viewModel : MainViewModel by viewModels()
+//    private val binding: ActivityMainBinding by lazy { ActivityMainBinding.inflate(layoutInflater) }
+ /*   private val viewModel : MainViewModel by viewModels()
     private val onItemClickListener = AnimalsAdapter.OnItemClickListener{ context ->
         addAnimalActivityLauncher.launch(Intent(context, AddAnimalActivity::class.java))
     }
@@ -45,46 +25,52 @@ class MainActivity : AppCompatActivity(), HelloFragment.OnEventListener {
         }
 
     }
-
+*/
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(binding.root)
-
-        createObservers()
-
-
-        val layoutManager = object: LinearLayoutManager(this, RecyclerView.HORIZONTAL, false){
-            override fun canScrollHorizontally(): Boolean {
-                return false
+        setContent {
+            MaterialTheme{
+                Navigation.Navigation()
             }
         }
 
-        binding.animalsRecycler.adapter = adapter
-        binding.animalsRecycler.layoutManager = layoutManager
+        /*setContentView(binding.root)*/
 
+//        createObservers()
 
-
-
-
-
-        binding.bottomMenu.setOnItemSelectedListener {
-            changeFragment(it.itemId)
-            true
-        }
-
-        binding.leftArrowBtn.setOnClickListener {
-            viewModel.previousAnimal()
-        }
-
-        binding.rightArrowBtn.setOnClickListener {
-            viewModel.nextAnimal()
-        }
+//
+//        val layoutManager = object: LinearLayoutManager(this, RecyclerView.HORIZONTAL, false){
+//            override fun canScrollHorizontally(): Boolean {
+//                return false
+//            }
+//        }
+//
+//        binding.animalsRecycler.adapter = adapter
+//        binding.animalsRecycler.layoutManager = layoutManager
+//
+//
+//
+//
+//
+//
+//        binding.bottomMenu.setOnItemSelectedListener {
+//            changeFragment(it.itemId)
+//            true
+//        }
+//
+//        binding.leftArrowBtn.setOnClickListener {
+//            viewModel.previousAnimal()
+//        }
+//
+//        binding.rightArrowBtn.setOnClickListener {
+//            viewModel.nextAnimal()
+//        }
 
     }
 
 
-    private fun createObservers(){
+    /*private fun createObservers(){
         viewModel.state.observe(this){state ->
             when(state){
                 "registration" -> startRegistration()
@@ -173,6 +159,6 @@ class MainActivity : AppCompatActivity(), HelloFragment.OnEventListener {
         viewModel.startLoading()
     }
 
-
+*/
 
 }
