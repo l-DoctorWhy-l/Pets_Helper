@@ -18,6 +18,15 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
                 var state: Boolean = false) : Comparable<Task>{
 
 
+
+    fun doTask(){
+        lastCompleteTime = System.currentTimeMillis()
+        state = true
+    }
+    fun undoTask(){
+        lastCompleteTime = 0
+        state = false
+    }
     fun resetState(currentTime: Long){
         val currentDate = GregorianCalendar.getInstance().apply{ timeInMillis = currentTime }
         val lastCompleteDate = GregorianCalendar.getInstance().apply{ timeInMillis = lastCompleteTime}

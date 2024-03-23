@@ -70,7 +70,7 @@ class TasksAdapter(private val context: Context): RecyclerView.Adapter<TasksAdap
                 doneChb.isChecked = task.state
 
                 doneChb.setOnCheckedChangeListener { _, isChecked ->
-                    task.state = isChecked
+                    if(isChecked) task.doTask() else task.undoTask()
                     CoroutineScope(Dispatchers.IO).launch{
                         taskRepository.updateTask(task)
                     }

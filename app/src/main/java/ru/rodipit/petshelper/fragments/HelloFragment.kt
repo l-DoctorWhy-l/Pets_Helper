@@ -24,6 +24,7 @@ class HelloFragment : Fragment() {
 
     private lateinit var someEventListener: OnEventListener
 
+    @Deprecated("Deprecated in Java")
     override fun onAttach(activity: Activity) {
         super.onAttach(activity)
         someEventListener = try {
