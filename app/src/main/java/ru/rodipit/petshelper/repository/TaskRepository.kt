@@ -2,6 +2,8 @@ package ru.rodipit.petshelper.repository
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.liveData
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.data.dao.TaskDao
 import ru.rodipit.petshelper.data.entities.Task
 import java.util.Calendar
@@ -23,13 +25,13 @@ class TaskRepository(private val taskDao: TaskDao) {
         return taskDao.getTasks(animalId, type).toMutableList()
     }
 
-    suspend fun updateTask(task: Task){
+    suspend fun updateTask(task: Task) = withContext(Dispatchers.IO){
         taskDao.update(task)
     }
 
     suspend fun loadCurrentDateTasks(animalId: Int): MutableList<Task>{
         val tasks = loadTasks(animalId)
-        println(tasks.size)
+        println("TASK SIZE: ${tasks.size}")
         val nowTime = Calendar.getInstance()
         val result = mutableListOf<Task>()
         tasks.forEach{

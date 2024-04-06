@@ -40,13 +40,12 @@ class MainFragment : Fragment() {
         _binding = FragmentMainBinding.inflate(inflater, container, false)
         adapter = TasksAdapter(requireContext())
 
-        createObservers()
+//        createObservers()
 
         val animalId = when(arguments){
             null -> -1
             else -> requireArguments().getInt("animalId")
         }
-        println(animalId)
 
         viewModel.loadAnimal(animalId)
 
@@ -67,29 +66,28 @@ class MainFragment : Fragment() {
         _binding = null
     }
 
-    private fun createObservers(){
-
-        lifecycleScope.launch {
-            viewModel.animal.collect{
-                if (it.id != -1){
-                    with(binding){
-                        println(it)
-                        fullnameTv.text = it.fullName
-                        breedTv.text = it.breed
-                        ageTv.text = it.getAge().toString()
-                        birthdayTv .text = it.getBDay()
-                    }
-                }
-            }
-        }
-
-        lifecycleScope.launch {
-            viewModel.currentTasks.collect{
-                adapter.data = it
-                viewModel.updateTasks()
-            }
-        }
-
-    }
+//    private fun createObservers(){
+//
+//        lifecycleScope.launch {
+//            viewModel.animal.collect{
+//                if (it.id != -1){
+//                    with(binding){
+//                        fullnameTv.text = it.fullName
+//                        breedTv.text = it.breed
+//                        ageTv.text = it.getAge().toString()
+////                        birthdayTv .text = it.getBDay()
+//                    }
+//                }
+//            }
+//        }
+//
+//        lifecycleScope.launch {
+//            viewModel.currentTasks.collect{
+//                adapter.data = it
+//                viewModel.updateTasks()
+//            }
+//        }
+//
+//    }
 
 }

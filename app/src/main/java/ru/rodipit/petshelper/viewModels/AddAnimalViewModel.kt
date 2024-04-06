@@ -1,77 +1,84 @@
 package ru.rodipit.petshelper.viewModels
 
-import android.app.Application
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.Validator
-import ru.rodipit.petshelper.data.dao.AnimalDao
-import ru.rodipit.petshelper.data.dao.UserDao
-import ru.rodipit.petshelper.data.db.AnimalsDb
-import ru.rodipit.petshelper.data.db.UsersDb
 import ru.rodipit.petshelper.data.entities.AnimalEntity
-import ru.rodipit.petshelper.models.Animal
 import ru.rodipit.petshelper.repository.MainRepository
+import ru.rodipit.petshelper.ui.ui_states.AddAnimalUiState
 import javax.inject.Inject
 
 @HiltViewModel
 class AddAnimalViewModel @Inject constructor(private val mainRepository: MainRepository) : ViewModel() {
 
-    val name = MutableLiveData("")
-    val fullname = MutableLiveData("")
-    val birthDate = MutableLiveData("")
-    val breed = MutableLiveData("")
-    private val animalType = MutableLiveData(Animal.OTHER)
-    val success = MutableLiveData(false)
 
+    private val _uiState = MutableStateFlow(AddAnimalUiState())
 
+    val uiState get() = _uiState.asStateFlow()
 
-
-
+    fun setUserId(userId: Int){
+        _uiState.update {
+            it.copy(userId = userId)
+        }
+    }
 
 
     fun changeName(name: String){
-        this.name.value = name
+        _uiState.update {
+            it.copy(name = name)
+        }
     }
 
     fun changeAnimalType(animalType: Int){
-        this.animalType.value = animalType
+        _uiState.update {
+            it.copy(animalType = animalType)
+        }
     }
 
-    fun changeFullname(fullname: String){
-        this.fullname.value = fullname
+    fun changeFullname(fullName: String){
+        _uiState.update {
+            it.copy(fullName = fullName)
+        }
     }
 
     fun changeBirthDate(birthDate: String){
-        this.birthDate.value = birthDate
+        _uiState.update {
+            it.copy(bDay = birthDate)
+        }
     }
 
     fun changeBreed(breed: String){
-        this.breed.value = breed
+        _uiState.update {
+            it.copy(breed = breed)
+        }
     }
 
     fun createNewAnimal() {
-        if (Validator.validateName(requireNotNull(name.value)) &&
-            Validator.validateName(requireNotNull(fullname.value)) &&
-            Validator.validateBreed(requireNotNull(breed.value)) &&
-            Validator.validateDate(requireNotNull(birthDate.value)) != 0L
+        println("start create")
+        if (Validator.validateName(requireNotNull(_uiState.value.name)) &&
+            Validator.validateName(requireNotNull(_uiState.value.fullName)) &&
+            Validator.validateBreed(requireNotNull(_uiState.value.breed)) &&
+            _uiState.value.bDay != ""
         ){
-
+            println("OKAY")
             val newAnimal =
                 AnimalEntity(
-                    null, fullname.value!!, name.value!!,
-                    Validator.validateDate(requireNotNull(birthDate.value)),
-                    breed.value!!, 1, animalType.value!!)
+                    null, _uiState.value.fullName, _uiState.value.name,
+                    _uiState.value.bDay,
+                    _uiState.value.breed,
+                    1, _uiState.value.animalType)
 
-            viewModelScope.launch(Dispatchers.IO) {
-                val addAnimalJob = mainRepository.addAnimal(newAnimal)
-                withContext(Dispatchers.Main){
-                    success.value = true
+            viewModelScope.launch {
+                val job = launch(Dispatchers.IO) { mainRepository.addAnimal(newAnimal) }
+                job.join()
+                _uiState.update {
+                    it.copy(isSuccess = true)
                 }
             }
         }

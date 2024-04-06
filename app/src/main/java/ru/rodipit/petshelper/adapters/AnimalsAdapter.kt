@@ -9,7 +9,6 @@ import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.databinding.AddAnimalCardBinding
 import ru.rodipit.petshelper.databinding.AnimalCardBinding
-import ru.rodipit.petshelper.models.Animal
 
 class AnimalsAdapter( private var onItemClickListener: OnItemClickListener): RecyclerView.Adapter<RecyclerView.ViewHolder>() {
     var animals: MutableList<AnimalEntity> = mutableListOf()
@@ -24,13 +23,13 @@ class AnimalsAdapter( private var onItemClickListener: OnItemClickListener): Rec
         fun onBind(animal: AnimalEntity){
             binding.name.text = animal.name
             val logoId = when(animal.type){
-                Animal.DOG -> R.drawable.dog
-                Animal.FISH -> R.drawable.fish
-                Animal.HAMSTER -> R.drawable.hamster
-                Animal.PARROT -> R.drawable.parrot
-                Animal.TURTLE -> R.drawable.turtle
-                Animal.CAT -> R.drawable.cat
-                Animal.OTHER -> R.drawable.pow
+                AnimalEntity.DOG -> R.drawable.dog
+                AnimalEntity.FISH -> R.drawable.fish
+                AnimalEntity.HAMSTER -> R.drawable.hamster
+                AnimalEntity.PARROT -> R.drawable.parrot
+                AnimalEntity.TURTLE -> R.drawable.turtle
+                AnimalEntity.CAT -> R.drawable.cat
+                AnimalEntity.OTHER -> R.drawable.pow
                 else -> R.drawable.pow
             }
             Picasso.get().load(logoId).fit().into(binding.logo)

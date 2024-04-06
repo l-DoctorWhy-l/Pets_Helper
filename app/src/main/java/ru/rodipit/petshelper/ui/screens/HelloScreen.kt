@@ -1,4 +1,4 @@
-package ru.rodipit.petshelper.ui
+package ru.rodipit.petshelper.ui.screens
 
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -28,9 +28,9 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import ru.rodipit.petshelper.R
+import ru.rodipit.petshelper.ui.Navigation
 import ru.rodipit.petshelper.viewModels.HelloViewModel
 
 

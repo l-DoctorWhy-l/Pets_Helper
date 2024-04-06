@@ -2,6 +2,7 @@ package ru.rodipit.petshelper.data.entities
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import ru.rodipit.petshelper.R
 import java.util.Calendar
 import java.util.GregorianCalendar
 import kotlin.math.abs
@@ -62,6 +63,14 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
         }
     }
 
+    fun getTaskTypeResourceId(): Int{
+        return when(type){
+            HEALTH -> R.drawable.baseline_healing_24
+            EATING -> R.drawable.baseline_lunch_dining_24
+            OTHER -> R.drawable.baseline_pets_24
+            else -> R.drawable.baseline_pets_24
+        }
+    }
 
 
 

@@ -7,12 +7,14 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.Task
 import ru.rodipit.petshelper.repository.MainRepository
 import ru.rodipit.petshelper.repository.TaskRepository
+import ru.rodipit.petshelper.ui.ui_states.MainScreenUiState
 import javax.inject.Inject
 
 @HiltViewModel
@@ -24,13 +26,8 @@ class MainScreenViewModel @Inject
 
 
 
-    private val _currentTasks = MutableStateFlow<MutableList<Task>>(mutableListOf())
-    val currentTasks: StateFlow<MutableList<Task>>
-        get() = _currentTasks.asStateFlow()
-
-    private val _animal = MutableStateFlow(AnimalEntity())
-    val animal: StateFlow<AnimalEntity>
-        get() = _animal.asStateFlow()
+    private val _uiState = MutableStateFlow(MainScreenUiState())
+    val uiState get() = _uiState.asStateFlow()
 
 
     fun loadAnimal(animalId: Int){
@@ -46,7 +43,7 @@ class MainScreenViewModel @Inject
             loadCurrentTasks(animalId)
 
             withContext(Dispatchers.Main){
-                _animal.value = loadedAnimal
+                _uiState.update { it.copy(currentAnimal = loadedAnimal) }
             }
         }
     }
@@ -55,15 +52,11 @@ class MainScreenViewModel @Inject
         viewModelScope.launch(Dispatchers.IO) {
             val loadedTasks = taskRepository.loadCurrentDateTasks(animalId)
             withContext(Dispatchers.Main){
-                _currentTasks.value = loadedTasks
-                println(currentTasks.value)
+                _uiState.update { it.copy(currentTasks = loadedTasks) }
             }
         }
     }
 
-    fun updateTasks(){
-
-    }
 
     fun addTask(){
         viewModelScope.launch {
@@ -71,7 +64,7 @@ class MainScreenViewModel @Inject
                 null,
                 1,
                 "AAAAA",
-                "BBBB",
+                "",
                 System.currentTimeMillis(),
                 0,
                 Task.DAILY,
@@ -79,8 +72,23 @@ class MainScreenViewModel @Inject
                 false
             )
             taskRepository.addTask(newTask)
+            _uiState.update {
+                it.copy(currentTasks = taskRepository.loadCurrentDateTasks(_uiState.value.currentAnimal.id!!))
+            }
+        }
+    }
 
-            _currentTasks.value = taskRepository.loadCurrentDateTasks(animal.value.id!!)
+    fun updateTask(task: Task){
+        viewModelScope.launch {
+            taskRepository.updateTask(task)
+            var index = 0
+            _uiState.value.currentTasks.forEachIndexed() { ind, item ->
+                if(item.id == task.id){
+                    index = ind
+                    return@forEachIndexed
+                }
+            }
+            _uiState.value.currentTasks[index] = task
         }
     }
 

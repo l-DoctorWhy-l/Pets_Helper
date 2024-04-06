@@ -1,6 +1,12 @@
 <resources>
     <string name="app_name">Pets Helper</string>
     <string name="greeting">Привет!\nДавай познакомимся?\nВведи своё имя)</string>
+    <string name="enter_pets_nickname">Введите кличку</string>
+    <string name="enter_pets_fullname">Введите полное имя</string>
+    <string name="enter_b_day">Выберете дату рождения</string>
+    <string name="enter_breed">Введите породу</string>
+    <string name="done">Готово</string>
+    <string name="okay">Ок</string>
     <string-array name="pets_types">
         <item>Other</item>
         <item>Cat</item>

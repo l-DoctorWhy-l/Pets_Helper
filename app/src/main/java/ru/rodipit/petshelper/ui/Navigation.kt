@@ -12,6 +12,10 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.navigation
 import androidx.navigation.compose.rememberNavController
+import ru.rodipit.petshelper.ui.screens.AddAnimalScreen
+import ru.rodipit.petshelper.ui.screens.HelloScreen
+import ru.rodipit.petshelper.ui.screens.SplashScreen
+import ru.rodipit.petshelper.viewModels.AddAnimalViewModel
 import ru.rodipit.petshelper.viewModels.HelloViewModel
 import ru.rodipit.petshelper.viewModels.MainViewModel
 import ru.rodipit.petshelper.viewModels.SplashViewModel
@@ -21,6 +25,7 @@ object Navigation {
     const val SPLASH_ROUTE = "SPLASH_ROUTE"
     const val MAIN_ROUTE = "MAIN_ROUTE"
     const val HELLO_ROUTE = "HELLO_ROUTE"
+    const val ADD_ANIMAL_ROUTE = "ADD_ANIMAL_ROUTE"
 
     @Composable
     fun Navigation(){
@@ -55,7 +60,15 @@ object Navigation {
             navigation(startDestination = Screen.MainFrame.name, route = MAIN_ROUTE){
                 composable(Screen.MainFrame.name){
                     val viewModel: MainViewModel = hiltViewModel()
-                    MainFrame(viewModel)
+                    MainFrame(viewModel, navController)
+                }
+            }
+            navigation(startDestination = Screen.AddAnimalScreen.name, route = ADD_ANIMAL_ROUTE){
+                composable(route = Screen.AddAnimalScreen.name){
+
+                    val addAnimalViewModel: AddAnimalViewModel = hiltViewModel()
+                    addAnimalViewModel.setUserId(1)
+                    AddAnimalScreen(viewModel = addAnimalViewModel, navController)
                 }
             }
         }
