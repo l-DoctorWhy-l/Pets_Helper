@@ -8,7 +8,7 @@ import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
-import ru.rodipit.petshelper.Validator
+import ru.rodipit.petshelper.core.Validator
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.repository.MainRepository
 import ru.rodipit.petshelper.ui.ui_states.AddAnimalUiState

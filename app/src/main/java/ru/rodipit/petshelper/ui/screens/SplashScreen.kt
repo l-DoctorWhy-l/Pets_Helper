@@ -25,7 +25,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
-import ru.rodipit.petshelper.LoadingStates
+import ru.rodipit.petshelper.core.LoadingStates
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.ui.Navigation
 import ru.rodipit.petshelper.viewModels.SplashViewModel

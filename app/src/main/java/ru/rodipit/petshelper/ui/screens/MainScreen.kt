@@ -1,5 +1,6 @@
 package ru.rodipit.petshelper.ui.screens
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
@@ -43,54 +44,55 @@ import ru.rodipit.petshelper.viewModels.MainScreenViewModel
 
 @Composable
 fun MainScreen(viewModel: MainScreenViewModel, innerPadding: PaddingValues) {
+
+
     val uiState by viewModel.uiState.collectAsState()
-    
-    if(uiState.currentAnimal.id != -1){
+    Log.d("TAG", "MainScreen")
+    if (uiState.currentAnimal.id != -1) {
         AnimalScreen(uiState = uiState, viewModel, innerPadding = innerPadding)
-    } else{
+    } else {
         NeedAnimalScreen(innerPadding = innerPadding)
     }
 
 }
+
 @Composable
-fun AnimalScreen(uiState: MainScreenUiState, viewModel: MainScreenViewModel, innerPadding: PaddingValues){
-    Column(modifier = Modifier
-        .padding(innerPadding)
-        .padding(5.dp)
-        .fillMaxSize(),
+fun AnimalScreen(
+    uiState: MainScreenUiState,
+    viewModel: MainScreenViewModel,
+    innerPadding: PaddingValues
+) {
+    Log.d("TAG", "Animal Screen")
+    Column(
+        modifier = Modifier
+            .padding(innerPadding)
+            .padding(5.dp)
+            .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally
-    ){
-        Row(
+    ) {
+        Box(
             Modifier
                 .fillMaxWidth()
                 .heightIn(30.dp, 40.dp)
         ) {
-            Column(Modifier.fillMaxWidth(0.33f)) {
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "Info",
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
 
-            }
-            Column(
-                Modifier
-                    .fillMaxWidth(0.5f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
+            IconButton(
+                onClick = { /*TODO*/ },
+                modifier = Modifier.align(Alignment.CenterEnd),
             ) {
-                Text(text = "Info",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_edit_24),
+                    contentDescription = "edit",
+                    Modifier.scale(1.5f)
                 )
             }
-            Column(Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                IconButton(onClick = { /*TODO*/ }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_edit_24),
-                        contentDescription = "edit",
-                        Modifier.scale(1.5f)
-                    )
-                }
-            }
+
         }
         Column(
             Modifier
@@ -106,52 +108,42 @@ fun AnimalScreen(uiState: MainScreenUiState, viewModel: MainScreenViewModel, inn
             Spacer(modifier = Modifier.height(4.dp))
             Text(text = "Breed: ${uiState.currentAnimal.breed}")
         }
-        Row(
+        Box(
             Modifier
                 .fillMaxWidth()
                 .heightIn(40.dp, 50.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .clip(RoundedCornerShape(15.dp))
                 .background(Color.LightGray)
         ) {
-            Column(Modifier.fillMaxWidth(0.33f)) {
-
-            }
-            Column(
-                Modifier
-                    .fillMaxWidth(0.5f)
-                    .fillMaxHeight(),
-                horizontalAlignment = Alignment.CenterHorizontally,
-                verticalArrangement = Arrangement.Center
-            ) {
-                Text(text = "Today Tasks",
-                    fontSize = 18.sp,
-                    fontWeight = FontWeight.Bold
+            Text(
+                modifier = Modifier.align(Alignment.Center),
+                text = "Today Tasks",
+                fontSize = 18.sp,
+                fontWeight = FontWeight.Bold
+            )
+            IconButton(
+                onClick = { viewModel.addTask() },
+                modifier = Modifier.align(Alignment.CenterEnd),
+                ) {
+                Icon(
+                    painter = painterResource(id = R.drawable.baseline_add_circle_24),
+                    contentDescription = "edit",
+                    Modifier.scale(1.5f)
                 )
             }
-            Column(Modifier.fillMaxWidth(),
-                horizontalAlignment = Alignment.End
-            ) {
-                IconButton(onClick = { viewModel.addTask() }) {
-                    Icon(
-                        painter = painterResource(id = R.drawable.baseline_add_circle_24),
-                        contentDescription = "edit",
-                        Modifier.scale(1.5f)
-                    )
-                }
-            }
         }
-        LazyColumn(modifier = Modifier
-            .fillMaxHeight()
-            .fillMaxWidth()
-            .padding(8.dp),
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxHeight()
+                .fillMaxWidth()
+                .padding(8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            items(uiState.currentTasks, key = {task ->
+            items(uiState.currentTasks, key = { task ->
                 task.id!!
-            }){task ->
+            }) { task ->
                 TaskItemWidget.DailyTaskItem(task = task, onChangeState = {
-                    task.state = it
-                    viewModel.updateTask(task)
+                    viewModel.updateTask(task.copy(state = it))
                 })
             }
         }

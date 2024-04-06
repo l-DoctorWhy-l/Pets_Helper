@@ -1,4 +1,4 @@
-package ru.rodipit.petshelper
+package ru.rodipit.petshelper.core
 
 
 import java.util.GregorianCalendar

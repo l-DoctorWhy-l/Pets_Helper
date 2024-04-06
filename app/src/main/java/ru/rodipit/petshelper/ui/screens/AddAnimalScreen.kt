@@ -41,7 +41,7 @@ import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
 import kotlinx.coroutines.launch
 import ru.rodipit.petshelper.R
-import ru.rodipit.petshelper.Tools
+import ru.rodipit.petshelper.core.Tools
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.ui.Navigation
 import ru.rodipit.petshelper.viewModels.AddAnimalViewModel

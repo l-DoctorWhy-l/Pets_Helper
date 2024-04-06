@@ -1,5 +1,6 @@
 package ru.rodipit.petshelper.viewModels
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -23,8 +24,6 @@ class MainScreenViewModel @Inject
     private val mainRepository: MainRepository,
     private val taskRepository: TaskRepository
     ) :ViewModel() {
-
-
 
     private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState get() = _uiState.asStateFlow()
@@ -88,7 +87,10 @@ class MainScreenViewModel @Inject
                     return@forEachIndexed
                 }
             }
-            _uiState.value.currentTasks[index] = task
+
+            _uiState.update {
+                it.copy( currentTasks = it.currentTasks.toMutableList().apply { set(index, task) } )
+            }
         }
     }
 
