@@ -3,6 +3,7 @@ package ru.rodipit.petshelper.data.entities
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.rodipit.petshelper.R
+import ru.rodipit.petshelper.core.Tools
 import java.util.Calendar
 import java.util.GregorianCalendar
 import kotlin.math.abs
@@ -12,7 +13,8 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
                 var animalId: Int,
                 var title: String,
                 var description: String,
-                var time: Long,
+                var date: String,
+                var time: String,
                 var lastCompleteTime: Long,
                 var repeating: Int,
                 var type: Int,
@@ -28,40 +30,40 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
         lastCompleteTime = 0
         state = false
     }
-    fun resetState(currentTime: Long){
-        val currentDate = GregorianCalendar.getInstance().apply{ timeInMillis = currentTime }
-        val lastCompleteDate = GregorianCalendar.getInstance().apply{ timeInMillis = lastCompleteTime}
-        if(!state){
-            this.lastCompleteTime = 0
-            return
-        }
-        if(repeating == DAILY && currentDate[Calendar.DAY_OF_YEAR] != lastCompleteDate[Calendar.DAY_OF_YEAR]){
-            lastCompleteTime = 0
-            state = false
-            return
-        }
-        if(repeating == WEEKLY && currentDate[Calendar.DAY_OF_YEAR] - lastCompleteDate[Calendar.DAY_OF_YEAR] >= 7){
-            lastCompleteTime = 0
-            state = false
-            return
-        }
-        if(repeating == MONTHLY && currentDate[Calendar.DAY_OF_YEAR] - lastCompleteDate[Calendar.DAY_OF_YEAR] >= 29){
-            lastCompleteTime = 0
-            state = false
-            return
-        }
-        if(repeating == YEARLY && currentDate[Calendar.YEAR] != lastCompleteDate[Calendar.YEAR]){
-            lastCompleteTime = 0
-            state = false
-            return
-        }
-        if(repeating == HALF_YEAR &&
-            abs(currentDate[Calendar.MONTH] - lastCompleteDate[Calendar.MONTH]) >= 6){
-            lastCompleteTime = 0
-            state = false
-            return
-        }
-    }
+//    fun resetState(currentTime: Long){
+//        val currentDate = GregorianCalendar.getInstance().apply{ timeInMillis = currentTime }
+//        val lastCompleteDate = GregorianCalendar.getInstance().apply{ timeInMillis = lastCompleteTime}
+//        if(!state){
+//            this.lastCompleteTime = 0
+//            return
+//        }
+//        if(repeating == DAILY && currentDate[Calendar.DAY_OF_YEAR] != lastCompleteDate[Calendar.DAY_OF_YEAR]){
+//            lastCompleteTime = 0
+//            state = false
+//            return
+//        }
+//        if(repeating == WEEKLY && currentDate[Calendar.DAY_OF_YEAR] - lastCompleteDate[Calendar.DAY_OF_YEAR] >= 7){
+//            lastCompleteTime = 0
+//            state = false
+//            return
+//        }
+//        if(repeating == MONTHLY && currentDate[Calendar.DAY_OF_YEAR] - lastCompleteDate[Calendar.DAY_OF_YEAR] >= 29){
+//            lastCompleteTime = 0
+//            state = false
+//            return
+//        }
+//        if(repeating == YEARLY && currentDate[Calendar.YEAR] != lastCompleteDate[Calendar.YEAR]){
+//            lastCompleteTime = 0
+//            state = false
+//            return
+//        }
+//        if(repeating == HALF_YEAR &&
+//            abs(currentDate[Calendar.MONTH] - lastCompleteDate[Calendar.MONTH]) >= 6){
+//            lastCompleteTime = 0
+//            state = false
+//            return
+//        }
+//    }
 
     fun getTaskTypeResourceId(): Int{
         return when(type){
@@ -89,6 +91,14 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
     }
 
     override fun compareTo(other: Task): Int {
-        return (this.time - other.time).toInt()
+        if(Tools.convertDateToLong(this.date) > Tools.convertDateToLong(other.date))
+            return 1
+        if(Tools.convertDateToLong(this.date) < Tools.convertDateToLong(other.date))
+            return -1
+        if(Tools.convertTimeToLong(this.time) > Tools.convertTimeToLong(other.time))
+            return 1
+        if(Tools.convertTimeToLong(this.time) < Tools.convertTimeToLong(other.time))
+            return -1
+        return 0
     }
 }

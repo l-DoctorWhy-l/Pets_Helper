@@ -27,7 +27,7 @@ data class AnimalEntity(@PrimaryKey(autoGenerate = true) val id: Int? = null,
         val now = Calendar.getInstance()
 
         val age = Calendar.getInstance().apply {
-            timeInMillis = Tools.convertTimeToLong(birthday)
+            timeInMillis = Tools.convertDateToLong(birthday)
         }
 
         if(now.get(Calendar.DAY_OF_YEAR) < age.get(Calendar.DAY_OF_YEAR) )

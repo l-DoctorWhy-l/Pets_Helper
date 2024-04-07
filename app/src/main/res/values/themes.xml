@@ -1,12 +1,5 @@
 <resources>
-    <!-- Base application theme. -->
     <style name="Base.Theme.PetsHelper" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your light theme here. -->
-        <item name="android:actionButtonStyle">@style/MyActionButtonStyle</item>
-    </style>
 
-    <style name="Theme.PetsHelper" parent="Base.Theme.PetsHelper" />
-    <style name="MyActionButtonStyle" parent="Widget.AppCompat.ActionBar">
-        <item name="android:maxWidth">30dip</item>
     </style>
 </resources>

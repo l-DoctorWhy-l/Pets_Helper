@@ -64,7 +64,8 @@ class MainScreenViewModel @Inject
                 1,
                 "AAAAA",
                 "",
-                System.currentTimeMillis(),
+                "12/12/2004",
+                "",
                 0,
                 Task.DAILY,
                 Task.EATING,
@@ -94,5 +95,12 @@ class MainScreenViewModel @Inject
         }
     }
 
+    fun showAddTaskDialog(){
+        _uiState.update { it.copy(addTaskDialogShowing = true) }
+    }
+
+    fun closeAddTaskDialog(){
+        _uiState.update { it.copy(addTaskDialogShowing = false) }
+    }
 
 }

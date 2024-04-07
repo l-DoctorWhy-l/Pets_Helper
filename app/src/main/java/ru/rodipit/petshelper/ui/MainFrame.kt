@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,6 +36,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import ru.rodipit.petshelper.ui.theme.PetsHelperTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -96,7 +98,8 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
                                     id = R.drawable.baseline_arrow_circle_left_24
                                 ),
                                 contentDescription = "Previous",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                         }
                         Spacer(modifier = Modifier.width(4.dp))
@@ -117,9 +120,12 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
                             enabled = uiState.currentAnimalPosition < uiState.animals.size - 1
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.baseline_arrow_circle_right_24),
+                                painter = painterResource(
+                                    id = R.drawable.baseline_arrow_circle_right_24
+                                ),
                                 contentDescription = "Next",
-                                modifier = Modifier.fillMaxSize()
+                                modifier = Modifier.fillMaxSize(),
+                                tint = MaterialTheme.colorScheme.onPrimaryContainer
                                 )
                         }
                     }
@@ -128,7 +134,9 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
         },
         bottomBar = {
             val items = listOf(Screen.MainScreen, Screen.EatingScreen, Screen.ExpensesScreen, Screen.MedicineScreen)
-            NavigationBar {
+            NavigationBar(
+
+            ) {
 
                 val navBackStackEntry by navController.currentBackStackEntryAsState()
                 val currentDestination = navBackStackEntry?.destination
@@ -177,8 +185,7 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
                 currentScreen = Screen.MainScreen.name
                 val mainScreenViewModel: MainScreenViewModel = hiltViewModel()
                 val animalId = backStack.arguments?.getInt("animalId") ?: -1
-                mainScreenViewModel.loadAnimal(animalId)
-                MainScreen(mainScreenViewModel, innerPadding)
+                MainScreen(mainScreenViewModel, animalId, innerPadding)
             }
             composable(
                 route = Screen.EatingScreen.name + "/{animalId}",
@@ -207,7 +214,7 @@ fun AnimalItem(animal: AnimalEntity = AnimalEntity(), modifier: Modifier){
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(10.dp),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center
@@ -218,12 +225,13 @@ fun AnimalItem(animal: AnimalEntity = AnimalEntity(), modifier: Modifier){
             modifier = Modifier
                 .clip(CircleShape)
                 .size(30.dp)
+                .background(MaterialTheme.colorScheme.onSurface)
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = animal.name,
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             maxLines = 1
         )
     }
@@ -233,7 +241,7 @@ fun AddAnimalItem(modifier: Modifier, navController: NavController){
     Row(
         modifier = modifier
             .clip(RoundedCornerShape(20.dp))
-            .background(Color.Black)
+            .background(MaterialTheme.colorScheme.secondaryContainer)
             .padding(10.dp)
             .clickable { navController.navigate(Navigation.ADD_ANIMAL_ROUTE) },
         verticalAlignment = Alignment.CenterVertically,
@@ -245,12 +253,13 @@ fun AddAnimalItem(modifier: Modifier, navController: NavController){
             modifier = Modifier
                 .clip(CircleShape)
                 .size(30.dp)
+                .background(MaterialTheme.colorScheme.onSurface)
         )
         Spacer(modifier = Modifier.width(10.dp))
         Text(
             text = "Add Pet",
             fontWeight = FontWeight.Bold,
-            color = Color.White,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             maxLines = 1
         )
     }

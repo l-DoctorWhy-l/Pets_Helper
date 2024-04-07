@@ -28,17 +28,14 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.data.entities.Task
-import ru.rodipit.petshelper.viewModels.MainScreenViewModel
 
 class TaskItemWidget() {
 
     companion object{
 
         @Composable
-        fun DailyTaskItem(task: Task, onChangeState: (Boolean) -> Unit ){
+        fun TaskItem(task: Task, onChangeState: (Boolean) -> Unit ){
             OutlinedCard(modifier = Modifier
                 .fillMaxWidth()
                 .heightIn(20.dp, 120.dp),
@@ -106,8 +103,7 @@ class TaskItemWidget() {
                                 verticalAlignment = Alignment.Bottom
 
                             ) {
-                                Spacer(modifier = Modifier.width(40.dp))
-                                Text(text = "time")
+                                DateTimeBar(task.date, task.time)
                             }
                         }
 
@@ -125,6 +121,61 @@ class TaskItemWidget() {
 
             }
         }
+
+
+
+
+        @Composable
+        fun DateTimeBar(
+            date: String,
+            time: String
+        )
+        {
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 8.dp)
+            ){
+                if (time.isNotBlank())
+                    Text(
+                        text = time,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+                Spacer(modifier = Modifier.width(4.dp))
+
+                if(date.isNotBlank())
+                    Text(
+                        text = date,
+                        fontWeight = FontWeight.SemiBold,
+                    )
+            }
+        }
+
+
+        @Composable
+        @Preview
+        fun DailyTaskItemPreview(){
+            TaskItem(
+                task = Task(
+                    null,
+                    1,
+                    "AAAAA",
+                    "",
+                    "12/12/2004",
+                    "12:30",
+                    0,
+                    Task.DAILY,
+                    Task.EATING,
+                    false
+                )
+            ) {
+
+            }
+        }
+
+
+
     }
+
 
 }

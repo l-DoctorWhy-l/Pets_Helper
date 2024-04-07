@@ -12,11 +12,13 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -30,9 +32,10 @@ fun NeedAnimalScreen(innerPadding: PaddingValues) {
         targetValue = 18f,
         animationSpec =
         infiniteRepeatable(
-            tween(durationMillis = 3000),
+            tween(durationMillis = 4000),
             repeatMode = RepeatMode.Reverse,
-        ), label = ""
+        ),
+        label = "",
 
     )
 
@@ -41,17 +44,21 @@ fun NeedAnimalScreen(innerPadding: PaddingValues) {
             .padding(innerPadding)
             .fillMaxSize(),
         horizontalAlignment = Alignment.CenterHorizontally,
-        verticalArrangement = Arrangement.Center
+        verticalArrangement = Arrangement.Center,
     ) {
         Text(
             text = "Ooops... Empty animal",
-            textAlign = TextAlign.Center
+            textAlign = TextAlign.Center,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
         )
         Spacer(modifier = Modifier.height(10.dp))
         Text(
             text = "Did you need to add new animal?",
             textAlign = TextAlign.Center,
-            fontSize = size.value.sp
+            fontSize = size.value.sp,
+            fontWeight = FontWeight.SemiBold,
+            color = MaterialTheme.colorScheme.onBackground,
         )
     }
 }

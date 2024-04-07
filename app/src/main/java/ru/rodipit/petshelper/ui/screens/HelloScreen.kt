@@ -35,46 +35,50 @@ import ru.rodipit.petshelper.viewModels.HelloViewModel
 
 
 @Composable
-fun HelloScreen(navController: NavController, viewModel: HelloViewModel){
+fun HelloScreen(navController: NavController, viewModel: HelloViewModel) {
 
     val name by viewModel.userName.collectAsState()
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         launch {
-            viewModel.regIsComplete.collect{
-                if(it){
-                    navController.navigate(Navigation.MAIN_ROUTE){popUpTo(Navigation.HELLO_ROUTE)}
+            viewModel.regIsComplete.collect {
+                if (it) {
+                    navController.navigate(Navigation.MAIN_ROUTE) { popUpTo(Navigation.HELLO_ROUTE) }
                 }
             }
         }
     }
 
-    Box(modifier = Modifier.fillMaxSize(),
+    Box(
+        modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
-        ){
-            Column(modifier = Modifier
+    ) {
+        Column(
+            modifier = Modifier
                 .fillMaxWidth()
                 .padding(16.dp),
-                horizontalAlignment = Alignment.CenterHorizontally
-            ) {
-                Text(text = stringResource(id = R.string.greeting),
-                    modifier = Modifier.fillMaxWidth(),
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Bold)
-                Spacer(Modifier.height(34.dp))
-                Row {
-                    OutlinedTextField(value = name, onValueChange = {
-                        viewModel.updateUserName(it)
-                    })
-                    IconButton(onClick = { viewModel.createUser(name) }) {
-                        Icon(
-                            painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
-                            contentDescription = "Next",
-                            modifier = Modifier.size(36.dp)
-                            )
-                    }
+            horizontalAlignment = Alignment.CenterHorizontally
+        ) {
+            Text(
+                text = stringResource(id = R.string.greeting),
+                modifier = Modifier.fillMaxWidth(),
+                fontSize = 24.sp,
+                fontWeight = FontWeight.Bold
+            )
+            Spacer(Modifier.height(34.dp))
+            Row {
+                OutlinedTextField(value = name, onValueChange = {
+                    viewModel.updateUserName(it)
+                })
+                IconButton(onClick = { viewModel.createUser(name) }) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
+                        contentDescription = "Next",
+                        modifier = Modifier.size(36.dp)
+                    )
                 }
             }
+        }
     }
 }
 
@@ -84,6 +88,6 @@ fun HelloScreen(navController: NavController, viewModel: HelloViewModel){
 fun HelloScreenPreview(
     navController: NavController = rememberNavController(),
     viewModel: HelloViewModel = hiltViewModel()
-    ){
+) {
     HelloScreen(navController = navController, viewModel = viewModel)
 }

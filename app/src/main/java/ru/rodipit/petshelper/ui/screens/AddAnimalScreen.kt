@@ -25,7 +25,6 @@ import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -48,11 +47,11 @@ import ru.rodipit.petshelper.viewModels.AddAnimalViewModel
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController){
+fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController) {
 
 
     val uiState by viewModel.uiState.collectAsState()
-    var expanded by remember {  mutableStateOf(false)  }
+    var expanded by remember { mutableStateOf(false) }
     var datePickerOpened by remember { mutableStateOf(false) }
 
     val dropDownMenuItems = listOf(
@@ -81,17 +80,18 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
-            )
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = uiState.name,
+        OutlinedTextField(
+            value = uiState.name,
             singleLine = true,
             maxLines = 1,
-            label = { Text(text = stringResource(id = R.string.enter_pets_nickname))},
+            label = { Text(text = stringResource(id = R.string.enter_pets_nickname)) },
             onValueChange = {
-                                viewModel.changeName(it)
-                            },
+                viewModel.changeName(it)
+            },
             modifier = Modifier.fillMaxWidth(0.8f)
-            )
+        )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Enter the type",
@@ -102,9 +102,10 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
                 .fillMaxWidth()
                 .padding(4.dp)
         )
-        ExposedDropdownMenuBox(expanded = expanded,
+        ExposedDropdownMenuBox(
+            expanded = expanded,
             onExpandedChange = { expanded = !expanded },
-            ) {
+        ) {
             TextField(
                 value = AnimalEntity.castAnimalTypeFromIntToString(uiState.animalType),
                 onValueChange = {},
@@ -116,38 +117,42 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             ExposedDropdownMenu(
                 expanded = expanded,
                 onDismissRequest = { expanded = false }) {
-                dropDownMenuItems.forEach{item ->
+                dropDownMenuItems.forEach { item ->
                     DropdownMenuItem(
                         text = { Text(text = item) },
                         onClick = {
-                                  viewModel.changeAnimalType(AnimalEntity.castAnimalTypeFromStringToInt(item))
-                                  expanded = false
-                                  }
-                        )
+                            viewModel.changeAnimalType(
+                                AnimalEntity.castAnimalTypeFromStringToInt(
+                                    item
+                                )
+                            )
+                            expanded = false
+                        }
+                    )
                 }
             }
 
         }
 
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = uiState.fullName,
+        OutlinedTextField(
+            value = uiState.fullName,
             singleLine = true,
             maxLines = 1,
-            label = { Text(text = stringResource(id = R.string.enter_pets_fullname))},
+            label = { Text(text = stringResource(id = R.string.enter_pets_fullname)) },
             onValueChange = {
-                                viewModel.changeFullname(it)
-                            },
+                viewModel.changeFullname(it)
+            },
             modifier = Modifier.fillMaxWidth(0.8f)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text =
-                if(uiState.bDay == ""){
-                    stringResource(id = R.string.enter_b_day)
-                } else{
-                      uiState.bDay
-                }
-            ,
+            if (uiState.bDay == "") {
+                stringResource(id = R.string.enter_b_day)
+            } else {
+                uiState.bDay
+            },
             fontSize = 24.sp,
             modifier = Modifier
                 .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
@@ -155,45 +160,46 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
                 .clickable(onClick = {
                     datePickerOpened = true
                 })
-            )
+        )
         Spacer(modifier = Modifier.height(8.dp))
-        OutlinedTextField(value = uiState.breed,
+        OutlinedTextField(
+            value = uiState.breed,
             singleLine = true,
             maxLines = 1,
-            label = { Text(text = stringResource(id = R.string.enter_breed))},
+            label = { Text(text = stringResource(id = R.string.enter_breed)) },
             onValueChange = {
-                                viewModel.changeBreed(it)
-                            },
+                viewModel.changeBreed(it)
+            },
             modifier = Modifier.fillMaxWidth(0.8f)
         )
         Spacer(modifier = Modifier.height(14.dp))
 
-        Button(onClick = {
-                         viewModel.createNewAnimal()
-                         },
+        Button(
+            onClick = {
+                viewModel.createNewAnimal()
+            },
             Modifier.fillMaxWidth(0.5f)
-            ) {
+        ) {
             Text(text = stringResource(id = R.string.done), fontWeight = Bold)
         }
     }
 
-    if(datePickerOpened){
+    if (datePickerOpened) {
         val datePickerState = rememberDatePickerState()
-        val confirmEnabled =  derivedStateOf { datePickerState.selectedDateMillis != null }
-        
+
         DatePickerDialog(
             onDismissRequest = { datePickerOpened = false },
-            confirmButton = { 
+            confirmButton = {
                 TextButton(
                     onClick = {
-                    datePickerOpened = false
-                    var date = "Change birthdate"
-                    if(datePickerState.selectedDateMillis != null){
-                        date = Tools.convertLongToTime(datePickerState.selectedDateMillis!!)
-                    }
-                    viewModel.changeBirthDate(date)
+                        datePickerOpened = false
+                        var date = "Change birthdate"
+                        if (datePickerState.selectedDateMillis != null) {
+                            date = Tools.convertLongToDate(datePickerState.selectedDateMillis!!)
+                        }
+                        viewModel.changeBirthDate(date)
                     },
-                    enabled = confirmEnabled.value
+                    enabled = datePickerState.selectedDateMillis != null
                 ) {
                     Text(text = stringResource(id = R.string.okay))
                 }
@@ -203,12 +209,12 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
         }
     }
 
-    LaunchedEffect(Unit){
+    LaunchedEffect(Unit) {
         launch {
-            viewModel.uiState.collect{
+            viewModel.uiState.collect {
                 println(it)
-                if(it.isSuccess){
-                    navController.navigate(Navigation.MAIN_ROUTE){popUpTo(Navigation.ADD_ANIMAL_ROUTE)}
+                if (it.isSuccess) {
+                    navController.navigate(Navigation.MAIN_ROUTE) { popUpTo(Navigation.ADD_ANIMAL_ROUTE) }
                 }
             }
         }
