@@ -14,7 +14,7 @@
         android:theme= "@style/Base.Theme.PetsHelper"
         tools:targetApi="31">
         <activity
-            android:name=".activities.MainActivity"
+            android:name=".presentation.activities.MainActivity"
             android:exported="true"
             android:screenOrientation="portrait"
             >
