@@ -4,9 +4,6 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.core.Tools
-import java.util.Calendar
-import java.util.GregorianCalendar
-import kotlin.math.abs
 
 @Entity(tableName = "Tasks")
 data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
@@ -15,7 +12,7 @@ data class Task(@PrimaryKey(autoGenerate = true) val id: Int? = null,
                 var description: String,
                 var date: String,
                 var time: String,
-                var lastCompleteTime: Long,
+                var lastCompleteTime: Long = 0,
                 var repeating: Int,
                 var type: Int,
                 var state: Boolean = false) : Comparable<Task>{

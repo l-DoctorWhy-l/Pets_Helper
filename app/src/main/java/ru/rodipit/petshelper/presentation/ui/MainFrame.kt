@@ -1,6 +1,12 @@
 package ru.rodipit.petshelper.presentation.ui
 
 import android.annotation.SuppressLint
+import androidx.compose.animation.EnterTransition
+import androidx.compose.animation.ExitTransition
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -12,7 +18,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.magnifier
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.CenterAlignedTopAppBar
@@ -35,8 +40,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
-import ru.rodipit.petshelper.presentation.ui.theme.PetsHelperTheme
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
@@ -53,9 +56,14 @@ import kotlinx.coroutines.launch
 import ru.rodipit.petshelper.R
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.presentation.ui.screens.EatingScreen
+import ru.rodipit.petshelper.presentation.ui.screens.ExpensesScreen
 import ru.rodipit.petshelper.presentation.ui.screens.MainScreen
+import ru.rodipit.petshelper.presentation.ui.screens.MedicineScreen
+import ru.rodipit.petshelper.presentation.viewModels.EatingScreenViewModel
+import ru.rodipit.petshelper.presentation.viewModels.ExpensesScreenViewModel
 import ru.rodipit.petshelper.presentation.viewModels.MainScreenViewModel
 import ru.rodipit.petshelper.presentation.viewModels.MainViewModel
+import ru.rodipit.petshelper.presentation.viewModels.MedicineScreenViewModel
 
 @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter", "RestrictedApi")
 @OptIn(ExperimentalMaterial3Api::class)
@@ -174,7 +182,11 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
     ) {innerPadding ->
         NavHost(
             navController = navController,
-            startDestination = Screen.MainScreen.name + "/${uiState.animals[0].id}"
+            startDestination = Screen.MainScreen.name + "/${uiState.animals[0].id}",
+            enterTransition = { slideInHorizontally(initialOffsetX = { 300 }) + fadeIn() },
+            exitTransition = { ExitTransition.None },
+            popEnterTransition = { EnterTransition.None },
+            popExitTransition = { slideOutHorizontally(targetOffsetX = { 300 }) + fadeOut() }
         )
         {
             composable(
@@ -201,14 +213,41 @@ fun MainFrame(viewModel: MainViewModel, mainNavController: NavController){
                     }
                 )
 
-            ){
+            ){backStack ->
                 currentScreen = Screen.EatingScreen.name
-//                val eatingScreenViewModel: EatingScreenViewModel = hiltViewModel()
-                LaunchedEffect(Unit){
-                    val animalId = it.arguments?.getInt("animalId") ?: -1
-//                    eatingScreenViewModel.loadAnimal(animalId)
-                }
-                EatingScreen()
+                val eatingScreenViewModel: EatingScreenViewModel = hiltViewModel()
+                val animalId = backStack.arguments?.getInt("animalId") ?: -1
+                EatingScreen(eatingScreenViewModel, animalId, innerPadding)
+            }
+            composable(
+                route = Screen.ExpensesScreen.name + "/{animalId}",
+                arguments = listOf(
+                    navArgument("animalId"){
+                        type = NavType.IntType
+                        defaultValue = uiState.animals[0].id
+                    }
+                )
+
+            ){backStack ->
+                currentScreen = Screen.ExpensesScreen.name
+                val expensesScreenViewModel: ExpensesScreenViewModel = hiltViewModel()
+                val animalId = backStack.arguments?.getInt("animalId") ?: -1
+                ExpensesScreen(expensesScreenViewModel, animalId, innerPadding)
+            }
+            composable(
+                route = Screen.MedicineScreen.name + "/{animalId}",
+                arguments = listOf(
+                    navArgument("animalId"){
+                        type = NavType.IntType
+                        defaultValue = uiState.animals[0].id
+                    }
+                )
+
+            ){backStack ->
+                currentScreen = Screen.MedicineScreen.name
+                val medicineScreenViewModel: MedicineScreenViewModel = hiltViewModel()
+                val animalId = backStack.arguments?.getInt("animalId") ?: -1
+                MedicineScreen(medicineScreenViewModel, animalId, innerPadding)
             }
         }
     }

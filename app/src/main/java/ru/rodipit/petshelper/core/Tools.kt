@@ -61,7 +61,35 @@ class Tools {
             return millis
         }
 
+
+        @SuppressLint("SimpleDateFormat")
+        fun checkTime(time: String): Boolean{
+            val format = SimpleDateFormat("H:m")
+
+            return try {
+                format.parse(time)
+                true
+            } catch (e: ParseException){
+                false
+            }
+
+        }
+
+
+        @SuppressLint("SimpleDateFormat")
+        fun checkDate(date: String): Boolean{
+            val format = SimpleDateFormat("dd/MM/yyyy")
+            return try {
+                format.parse(date)
+                true
+            } catch(e: ParseException){
+                false
+            }
+        }
+
+
     }
+
 
 
 

@@ -17,16 +17,14 @@ import ru.rodipit.petshelper.presentation.ui.ui_states.MainScreenUiState
 import javax.inject.Inject
 
 @HiltViewModel
-class MainScreenViewModel @Inject
+class ExpensesScreenViewModel  @Inject
     constructor(
-    private val mainRepository: MainRepository,
-    private val taskRepository: TaskRepository
-    ) :ViewModel() {
+        private val mainRepository: MainRepository,
+        private val taskRepository: TaskRepository
+): ViewModel() {
 
     private val _uiState = MutableStateFlow(MainScreenUiState())
     val uiState get() = _uiState.asStateFlow()
-
-
     fun loadAnimal(animalId: Int){
         if (animalId == -1)
             return
@@ -82,13 +80,4 @@ class MainScreenViewModel @Inject
             }
         }
     }
-
-    fun showAddTaskDialog(){
-        _uiState.update { it.copy(addTaskDialogShowing = true) }
-    }
-
-    fun closeAddTaskDialog(){
-        _uiState.update { it.copy(addTaskDialogShowing = false) }
-    }
-
 }

@@ -1,13 +1,9 @@
 package ru.rodipit.petshelper.presentation.ui.screens
 
-import android.support.annotation.StringRes
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.Orientation
-import androidx.compose.foundation.gestures.scrollable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -27,12 +23,11 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.BasicAlertDialog
+import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.CardElevation
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -45,25 +40,25 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.clipToBounds
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.font.FontStyle
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import kotlinx.coroutines.joinAll
+import kotlinx.coroutines.launch
 import ru.rodipit.petshelper.R
-import ru.rodipit.petshelper.data.db.AnimalsDb
+import ru.rodipit.petshelper.core.Tools
 import ru.rodipit.petshelper.data.entities.AnimalEntity
 import ru.rodipit.petshelper.data.entities.Task
 import ru.rodipit.petshelper.presentation.ui.TaskItemWidget
-import ru.rodipit.petshelper.presentation.ui.theme.Typography
 import ru.rodipit.petshelper.presentation.ui.ui_states.MainScreenUiState
 import ru.rodipit.petshelper.presentation.viewModels.MainScreenViewModel
 
@@ -154,6 +149,8 @@ fun AnimalScreen(
             AddTaskDialog(
                 modifier = Modifier,
                 onDismiss = { viewModel.closeAddTaskDialog() },
+                animalId = uiState.currentAnimal.id!!,
+                onAddTask = viewModel::addTask
             )
 
         }
@@ -232,8 +229,12 @@ fun AnimalInfoComponent(
 fun AddTaskDialog(
     modifier: Modifier = Modifier,
     onDismiss: () -> Unit,
+    animalId: Int,
+    onAddTask: (task: Task) -> Unit
 ) {
 
+
+    val coroutineScope = rememberCoroutineScope()
 
     BasicAlertDialog(onDismissRequest = onDismiss) {
         var title by remember {
@@ -243,6 +244,20 @@ fun AddTaskDialog(
         var description by remember {
             mutableStateOf("")
         }
+        var date by remember {
+            mutableStateOf("")
+        }
+        var time by remember {
+            mutableStateOf("12:00")
+        }
+
+        var dateError by remember {
+            mutableStateOf(false)
+        }
+        var timeError by remember {
+            mutableStateOf(false)
+        }
+
 
 
         Card(
@@ -259,7 +274,6 @@ fun AddTaskDialog(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-                    .background(Color.White)
                     .padding(15.dp)
             ) {
                 Row(
@@ -305,7 +319,7 @@ fun AddTaskDialog(
                     shape = RoundedCornerShape(15.dp),
                     modifier = Modifier,
                     value = description,
-                    maxLines = 8,
+                    maxLines = 4,
                     onValueChange = { description = it }
                 )
                 Spacer(modifier = Modifier.height(8.dp))
@@ -351,7 +365,11 @@ fun AddTaskDialog(
                             contentAlignment = Alignment.Center,
 
                             ) {
-                            Text(text = it)
+                            Text(
+                                text = it,
+                                color = MaterialTheme.colorScheme.scrim,
+                                fontWeight = FontWeight.Bold
+                            )
                         }
                     }
                 }
@@ -396,11 +414,95 @@ fun AddTaskDialog(
                             contentAlignment = Alignment.Center,
 
                             ) {
-                            Text(text = it)
+                            Text(
+                                text = it,
+                                color = MaterialTheme.colorScheme.scrim,
+                                fontWeight = FontWeight.Bold
+                                )
                         }
                     }
                 }
+                
+                Spacer(modifier = Modifier.height(12.dp))
+                if(selectedRepeatMode != "Daily"){
+                    Text(
+                        text = "Choose first notify date",
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                    OutlinedTextField(
+                        value = date,
+                        placeholder = {
+                                Text(text = "Format is dd/MM/yyyy")
+                        },
+                        label = {
+                            Text(text = "Date")
+                        },
+                        keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+                        isError = dateError,
+                        shape = RoundedCornerShape(15.dp),
+                        singleLine = true,
+                        onValueChange = { date = it }
+                    )
+                    Spacer(modifier = Modifier.height(8.dp))
+                }
+                Text(
+                    text = "Choose first notify time",
+                    fontWeight = FontWeight.Bold,
+                    fontSize = 24.sp
+                )
+                Spacer(modifier = Modifier.height(8.dp))
+                OutlinedTextField(
+                    shape = RoundedCornerShape(15.dp),
+                    modifier = Modifier,
+                    placeholder = {
+                        Text(text = "Format is HH.MM")
+                    },
+                    label = {
+                        Text(text = "Time")
+                    },
+                    isError = timeError,
+                    value = time,
+                    maxLines = 1,
+                    singleLine = true,
+                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Ascii),
+                    onValueChange = { time = it }
+                )
+                Spacer(modifier = Modifier.height(12.dp))
+                Button(
+                    onClick = {
+                        coroutineScope.launch {
+
+                            val checkDateJob = launch { dateError = !Tools.checkDate(date) }
+                            val checkTimeJob = launch { timeError = !Tools.checkTime(time) }
+                            joinAll(checkDateJob, checkTimeJob)
+
+                            if(!dateError && !timeError || selectedRepeatMode == "Daily" && !timeError){
+                                val newTask = Task(
+                                    animalId = animalId,
+                                    title = title,
+                                    description = description,
+                                    date = date,
+                                    time = time,
+                                    repeating = repeatModes.getOrDefault(selectedRepeatMode, Task.ONE_TIME),
+                                    type = taskTypes.getOrDefault(selectedTaskType, Task.OTHER)
+                                )
+                                Log.d("task", newTask.toString())
+                                onAddTask(newTask)
+                                onDismiss()
+                            }
+
+                        }
+
+                              },
+                    modifier= Modifier.align(Alignment.CenterHorizontally)
+
+                ) {
+                    Text(text = "Create")
+                }
             }
+
         }
     }
 }
