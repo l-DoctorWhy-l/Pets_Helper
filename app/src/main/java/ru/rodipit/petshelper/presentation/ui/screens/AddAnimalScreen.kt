@@ -1,5 +1,6 @@
 package ru.rodipit.petshelper.presentation.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -17,6 +18,7 @@ import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
@@ -66,8 +68,9 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
 
     Column(
         modifier = Modifier
-            .padding(8.dp)
-            .fillMaxSize(),
+            .fillMaxSize()
+            .background(MaterialTheme.colorScheme.secondaryContainer)
+            .padding(8.dp),
         horizontalAlignment = Alignment.CenterHorizontally,
         verticalArrangement = Arrangement.Center
 
@@ -77,6 +80,7 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             fontWeight = Bold,
             textAlign = TextAlign.Center,
             fontSize = 28.sp,
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(4.dp)
@@ -95,6 +99,7 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
         Spacer(modifier = Modifier.height(8.dp))
         Text(
             text = "Enter the type",
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             fontWeight = Bold,
             textAlign = TextAlign.Center,
             fontSize = 20.sp,
@@ -139,7 +144,12 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             value = uiState.fullName,
             singleLine = true,
             maxLines = 1,
-            label = { Text(text = stringResource(id = R.string.enter_pets_fullname)) },
+            label = {
+                        Text(
+                            text = stringResource(id = R.string.enter_pets_fullname),
+                            color = MaterialTheme.colorScheme.onSecondaryContainer
+                        )
+                    },
             onValueChange = {
                 viewModel.changeFullname(it)
             },
@@ -147,6 +157,7 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
         )
         Spacer(modifier = Modifier.height(8.dp))
         Text(
+            color = MaterialTheme.colorScheme.onSecondaryContainer,
             text =
             if (uiState.bDay == "") {
                 stringResource(id = R.string.enter_b_day)
@@ -155,7 +166,11 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             },
             fontSize = 24.sp,
             modifier = Modifier
-                .border(2.dp, Color.Black, RoundedCornerShape(12.dp))
+                .border(
+                    2.dp,
+                    color = MaterialTheme.colorScheme.onSecondaryContainer,
+                    RoundedCornerShape(12.dp)
+                )
                 .padding(14.dp)
                 .clickable(onClick = {
                     datePickerOpened = true
@@ -166,7 +181,12 @@ fun AddAnimalScreen(viewModel: AddAnimalViewModel, navController: NavController)
             value = uiState.breed,
             singleLine = true,
             maxLines = 1,
-            label = { Text(text = stringResource(id = R.string.enter_breed)) },
+            label = {
+                Text(
+                    text = stringResource(id = R.string.enter_breed),
+                    color = MaterialTheme.colorScheme.onSecondaryContainer
+                )
+            },
             onValueChange = {
                 viewModel.changeBreed(it)
             },

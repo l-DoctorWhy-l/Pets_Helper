@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +20,7 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
@@ -63,7 +65,9 @@ fun HelloScreen(navController: NavController, viewModel: HelloViewModel) {
                 text = stringResource(id = R.string.greeting),
                 modifier = Modifier.fillMaxWidth(),
                 fontSize = 24.sp,
-                fontWeight = FontWeight.Bold
+                lineHeight = 28.sp,
+                fontWeight = FontWeight.Bold,
+                color = MaterialTheme.colorScheme.onPrimaryContainer
             )
             Spacer(Modifier.height(34.dp))
             Row {
@@ -74,7 +78,8 @@ fun HelloScreen(navController: NavController, viewModel: HelloViewModel) {
                     Icon(
                         painter = painterResource(id = R.drawable.baseline_arrow_forward_24),
                         contentDescription = "Next",
-                        modifier = Modifier.size(36.dp)
+                        modifier = Modifier.size(36.dp),
+                        tint = MaterialTheme.colorScheme.onPrimaryContainer
                     )
                 }
             }
